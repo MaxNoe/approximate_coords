@@ -3,8 +3,7 @@ from astropy.time import Time
 import astropy.units as u
 import numpy as np
 
-from approximate_coords.transform import transform_altaz_to_cirs
-from approximate_coords.change_trafo import use_transformation
+from approximate_coords.altaz_cirs import no_polar_motion
 
 import warnings
 from astropy.utils.exceptions import ErfaWarning, AstropyWarning
@@ -25,7 +24,7 @@ coord_altaz = coord.transform_to(AltAz(obstime=time, location=location))
 coord_cirs = coord_altaz.transform_to(CIRS(obstime=time))
 
 # swap in the approximate transform
-with use_transformation(AltAz, CIRS, transform_altaz_to_cirs):
+with no_polar_motion():
     coord_approx = coord_altaz.transform_to(CIRS(obstime=time))
 
 

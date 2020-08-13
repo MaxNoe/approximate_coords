@@ -6,6 +6,8 @@ import numpy as np
 J2000_TT = Time('J2000.0', scale='tt')
 J2000_UT1 = Time('J2000.0', scale='ut1')
 
+JD_J2000 = 2451545
+
 DAYS_IN_CENTURY = 36525
 TWO_PI = 2 * np.pi
 
@@ -39,7 +41,7 @@ def earth_rotation_angle(time):
     # by radio telescopes.
     # UTC would also be ok as it is < 1 second from UT1 at all times.
     # But astropy does not support UTC timedeltas.
-    DU = modified_julian_date(time.ut1, epoch=J2000_UT1)
+    DU = time.ut1.jd - JD_J2000
 
     era = TWO_PI * (0.7790_5727_32640 + 1.0027_3781_1911_35448 * DU)
     return era % TWO_PI

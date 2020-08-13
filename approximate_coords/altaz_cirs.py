@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from numpy import sin, cos, arctan2, arcsin, pi
 from astropy.coordinates import (
     FunctionTransform, UnitSphericalRepresentation, SphericalRepresentation,
@@ -6,6 +7,7 @@ from astropy.coordinates import (
 import astropy.units as u
 
 from .time import local_hour_angle, earth_rotation_angle
+from .change_trafo import use_transformation
 
 
 def is_unit_repr(coord):
@@ -120,3 +122,17 @@ def _cirs_to_altaz(fromcoord, toframe):
 
 transform_altaz_to_cirs = FunctionTransform(_altaz_to_cirs, AltAz, CIRS)
 transform_cirs_to_altaz = FunctionTransform(_cirs_to_altaz, CIRS, AltAz)
+
+
+@contextmanager
+def no_polar_motion():
+    '''
+    Use approximate transforms for AltAz <-> CIRS that
+    do not include polar motion.
+    '''
+    try:
+        with use_transformation(CIRS, AltAz, transform_cirs_to_altaz):
+            with use_transformation(AltAz, CIRS, transform_altaz_to_cirs):
+                yield
+    finally:
+        pass

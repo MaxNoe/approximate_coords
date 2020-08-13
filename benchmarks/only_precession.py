@@ -1,12 +1,9 @@
-from astropy.coordinates import SkyCoord, AltAz, ICRS, CIRS, EarthLocation
+from astropy.coordinates import SkyCoord, AltAz, ICRS, EarthLocation
 from astropy.time import Time
 import astropy.units as u
 import numpy as np
 
-from approximate_coords.change_trafo import use_transformation
-from approximate_coords.almanac_chp_6 import (
-    cirs_to_icrs_only_precession,
-)
+from approximate_coords.almanac_chp_6 import approximate_precesssion
 import warnings
 from astropy.utils.exceptions import ErfaWarning, AstropyWarning
 import matplotlib.pyplot as plt
@@ -22,7 +19,7 @@ location = EarthLocation.of_site('Roque de los Muchachos')
 coord_altaz = coord.transform_to(AltAz(obstime=time, location=location))
 
 
-with use_transformation(CIRS, ICRS, cirs_to_icrs_only_precession):
+with approximate_precesssion():
     coord_approx = coord_altaz.transform_to(ICRS)
 
 separation = coord_approx.separation(coord).arcsecond
@@ -48,8 +45,8 @@ axd['time'].set_ylabel('difference / as')
 axd['sep'].hist(separation, bins=100, color='k')
 axd['sep'].set_xlabel('separation / as')
 axd['dra'].hist(dra, bins=100, color='C0')
-axd['dra'].set_xlabel('$\Delta$ra / as')
+axd['dra'].set_xlabel(r'$\Delta$ra / as')
 axd['ddec'].hist(ddec, bins=100, color='C1')
-axd['ddec'].set_xlabel('$\Delta$dec / as')
+axd['ddec'].set_xlabel(r'$\Delta$dec / as')
 
 fig.savefig('build/only_precession.pdf')

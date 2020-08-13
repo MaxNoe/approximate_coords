@@ -4,7 +4,7 @@ import numpy as np
 
 
 def test_altaz_to_cirs():
-    from approximate_coords.transform import altaz_to_cirs
+    from approximate_coords.altaz_cirs import altaz_to_cirs
 
     alts = [-45, 0, 25]
     azs = np.arange(0, 360, 22.5)
