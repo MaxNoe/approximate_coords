@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "approximate_coords"
+version = "0.1.0"
+description = "Approximate coordinate transforms for astropy based on formulas in the Explanatory Supplement to the Astronomical Almanac"
+authors = ["Maximilian Nöthe <maximilian.noethe@tu-dortmund.de>"]
+license = "mit"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+numpy = "^1.17.0"
+astropy = "^4.0.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.0.1"
+matplotlib = "^3.3.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
