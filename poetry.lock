@@ -162,6 +162,21 @@ version = "1.9.0"
 
 [[package]]
 category = "dev"
+description = "Python bindings for ERFA"
+name = "pyerfa"
+optional = false
+python-versions = ">=3.6"
+version = "1.7.0"
+
+[package.dependencies]
+numpy = ">=1.16"
+
+[package.extras]
+docs = ["sphinx-astropy (>=1.3)"]
+test = ["pytest", "pytest-doctestplus (>=0.7)"]
+
+[[package]]
+category = "dev"
 description = "Python parsing module"
 name = "pyparsing"
 optional = false
@@ -236,7 +251,8 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "d8b38613dac76d57c4a89e02dcaf5b7dba459299b732c097fcf2a14ba5289079"
+content-hash = "97ca47e1909165755b1418b2cbde8dd0073ca5a492b815a4ed701ee3269340c5"
+lock-version = "1.0"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -394,6 +410,30 @@ pluggy = [
 py = [
     {file = "py-1.9.0-py2.py3-none-any.whl", hash = "sha256:366389d1db726cd2fcfc79732e75410e5fe4d31db13692115529d34069a043c2"},
     {file = "py-1.9.0.tar.gz", hash = "sha256:9ca6883ce56b4e8da7e79ac18787889fa5206c79dcc67fb065376cd2fe03f342"},
+]
+pyerfa = [
+    {file = "pyerfa-1.7.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:56f4ca4898b3ac9e954b6fe5cadf13b99aff6e9ad0656c3430f5be26b94e6c33"},
+    {file = "pyerfa-1.7.0-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:fc719188101eff0f95afd711b1e26e62fe0a7b8790eb85c822638bf804ea5e10"},
+    {file = "pyerfa-1.7.0-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:c644ad3ab5bcd7d51ff4cff4b90f3a6c10ad9443b71b0fd33db7a59453507d99"},
+    {file = "pyerfa-1.7.0-cp36-cp36m-manylinux2010_i686.whl", hash = "sha256:66f83e8766bb5d7e44bc73f7e497ac6df47cd1d3b89db2021910d7d9af3c6b06"},
+    {file = "pyerfa-1.7.0-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:215a004da55768853152b997da7f4d283f6af94bac6248ff2e635ad1b14e8446"},
+    {file = "pyerfa-1.7.0-cp36-cp36m-win32.whl", hash = "sha256:993a8783b4eadfc9364120a60bd8c063c2ac853a116ebc5f063b46f43242dc8b"},
+    {file = "pyerfa-1.7.0-cp36-cp36m-win_amd64.whl", hash = "sha256:dc6d888e6da6c7a4249787f2fd7edd70d89a32d67c98e860612da67b74c83f98"},
+    {file = "pyerfa-1.7.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:22db74bd4b1ad1fac688541a6e2318ae09b44bd8efa6bebcda366fc4fcd850e6"},
+    {file = "pyerfa-1.7.0-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:a09ecced65e00c6669e2beac8401423ef849fd0c0ef2e3d751da0737a8505a8d"},
+    {file = "pyerfa-1.7.0-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:7171898dd14475c837cf4a7bc0a5292ff8accc2e1e70a379dae448d0d04286d5"},
+    {file = "pyerfa-1.7.0-cp37-cp37m-manylinux2010_i686.whl", hash = "sha256:6cf9f93467c9ec2d2cc5d213a916bfe4f3701326f2c1f9004ddc63eb90bb9144"},
+    {file = "pyerfa-1.7.0-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:c4ab5d75257ab72b9675e12947d82228bbda56a1f4f19130f6115b10eeb447fa"},
+    {file = "pyerfa-1.7.0-cp37-cp37m-win32.whl", hash = "sha256:241f0e49e493f89421dc981ab1cc6f6c96c0f6bdb71b0c50c2cf31f382b5dad2"},
+    {file = "pyerfa-1.7.0-cp37-cp37m-win_amd64.whl", hash = "sha256:9d46608a03c952ee5e98413e65a21729bdd9acbb2c80939b2fb3d977c376e4de"},
+    {file = "pyerfa-1.7.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:222808d17c7e53f4985e8c4e03a21483643bed969cb16b329715f33d2f3099b6"},
+    {file = "pyerfa-1.7.0-cp38-cp38-manylinux1_i686.whl", hash = "sha256:670119918f2843d9d30adafc59ae2d9e7f32e61fc5f4bc26e11c278abe6ca4b5"},
+    {file = "pyerfa-1.7.0-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:03437c87196c3ca16527203b9d24e9df86aabea1e3f92c91d46a5577d6a6ea06"},
+    {file = "pyerfa-1.7.0-cp38-cp38-manylinux2010_i686.whl", hash = "sha256:3c4dbf592bdec9f6c4093060dd4978c193d6095802ac88a30b4befe7897d9959"},
+    {file = "pyerfa-1.7.0-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:93d5e14a19d0a8eb9e58618d6afeeed8cef85d7c16a1da82e5282cf4d7bdfdf6"},
+    {file = "pyerfa-1.7.0-cp38-cp38-win32.whl", hash = "sha256:f8c30d85fdfaf034afa3c70165b88e3c464dd35e8fcfbb0708de49c1ef4122ce"},
+    {file = "pyerfa-1.7.0-cp38-cp38-win_amd64.whl", hash = "sha256:3250db04e7f544dcb5a14b697344b647046ff080876876ba89c541a33eb534e1"},
+    {file = "pyerfa-1.7.0.tar.gz", hash = "sha256:58cd5fbc27e31211102568f952fdbac410b184563be4da57743cbe5e5ccebe47"},
 ]
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},

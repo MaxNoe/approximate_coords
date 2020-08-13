@@ -13,6 +13,7 @@ astropy = "^4.0.1"
 [tool.poetry.dev-dependencies]
 pytest = "^6.0.1"
 matplotlib = "^3.3.0"
+pyerfa = "^1.7.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

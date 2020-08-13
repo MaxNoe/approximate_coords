@@ -14,7 +14,6 @@ import numpy as np
 from astropy.coordinates import (
     FunctionTransform,
     SphericalRepresentation,
-    AltAz,
     ICRS,
     CIRS,
     UnitSphericalRepresentation,
@@ -22,7 +21,6 @@ from astropy.coordinates import (
 import astropy.units as u
 
 from .time import delta_julian_century
-from .transform import altaz_to_radec
 
 
 def calc_M(T):
@@ -30,11 +28,15 @@ def calc_M(T):
     Calculate precession angle M to a precision of 1", line 1 of (6.34), p. 221
     '''
 
-    return np.deg2rad(
-        1.281_16 * T
-        + 0.000_39 * T**2
-        + 0.000_01 * T**3
-    )
+    # I suspect that this has to do with using ERA instead of GMST
+    # and that ERA somehow already includes this.
+    # Confirmation needed though
+    return np.zeros_like(T)
+    # return np.deg2rad(
+    #     1.281_16 * T
+    #     + 0.000_39 * T**2
+    #     + 0.000_01 * T**3
+    # )
 
 
 def calc_N(T):
@@ -108,67 +110,11 @@ def from_j2000(alpha0, delta0, T):
     return alpha, delta
 
 
-def altaz_to_radec_only_precession(alt, az, time, location):
-    T = delta_julian_century(time)
-
-    ra, dec = altaz_to_radec(
-        alt=alt,
-        az=az,
-        time=time,
-        location=location,
-    )
-    ra, dec = to_j2000(ra, dec, T)
-
-    ra = u.Quantity(ra, u.rad, copy=False)
-    dec = u.Quantity(dec, u.rad, copy=False)
-
-    return ra, dec
-
-
-def altaz_to_cirs(alt, az, time, location):
-    T = delta_julian_century(time)
-
-    ra, dec = altaz_to_radec(
-        alt=alt,
-        az=az,
-        time=time,
-        location=location,
-    )
-
-    ra = u.Quantity(ra, u.rad, copy=False)
-    dec = u.Quantity(dec, u.rad, copy=False)
-
-    return ra, dec
-
-
-def _altaz_to_icrs_only_precession(fromcoord, toframe):
-    T = delta_julian_century(fromcoord.obstime)
-
-    ra, dec = altaz_to_radec(
-        alt=fromcoord.alt.rad,
-        az=fromcoord.az.rad,
-        time=fromcoord.obstime,
-        location=fromcoord.location,
-    )
-    ra, dec = to_j2000(ra, dec, T)
-
-    ra = u.Quantity(ra, u.rad, copy=False)
-    dec = u.Quantity(dec, u.rad, copy=False)
-
-    if fromcoord.distance is None:
-        rep = UnitSphericalRepresentation(lon=ra, lat=dec)
-    else:
-        rep = SphericalRepresentation(
-            lon=ra, lat=dec, distance=fromcoord.distance
-        )
-
-    return toframe.realize_frame(rep)
-
-
 def _cirs_to_icrs_only_precession(fromcoord, toframe):
     T = delta_julian_century(fromcoord.obstime)
 
-    ra, dec = to_j2000(fromcoord.ra.rad, fromcoord.dec.rad, T)
+    ra, dec = fromcoord.ra.rad, fromcoord.dec.rad
+    ra, dec = to_j2000(ra, dec, T)
 
     ra = u.Quantity(ra, u.rad, copy=False)
     dec = u.Quantity(np.clip(dec, -np.pi/2, np.pi/2), u.rad, copy=False)
@@ -182,12 +128,6 @@ def _cirs_to_icrs_only_precession(fromcoord, toframe):
 
     return toframe.realize_frame(rep)
 
-
-altaz_to_icrs_only_precession = FunctionTransform(
-    func=_altaz_to_icrs_only_precession,
-    fromsys=AltAz,
-    tosys=ICRS,
-)
 
 cirs_to_icrs_only_precession = FunctionTransform(
     func=_cirs_to_icrs_only_precession,

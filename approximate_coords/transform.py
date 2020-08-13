@@ -1,11 +1,23 @@
 from numpy import sin, cos, arctan2, arcsin, pi
+from astropy.coordinates import (
+    FunctionTransform, UnitSphericalRepresentation, SphericalRepresentation,
+    AltAz, CIRS
+)
+import astropy.units as u
 
 from .time import local_hour_angle, earth_rotation_angle
 
 
-def radec_to_altaz(ra, dec, time, location):
+def is_unit_repr(coord):
+    return (
+        isinstance(coord.data, UnitSphericalRepresentation)
+        or coord.cartesian.x.unit == u.one
+    )
+
+
+def cirs_to_altaz(ra, dec, time, location):
     '''
-    Convert right ascension / declination to altitude / azimuth.
+    Convert intermediate right ascension / declination to altitude / azimuth.
     Azimuth is measured from North (0°) through East (90°)
     '''
 
@@ -33,15 +45,16 @@ def radec_to_altaz(ra, dec, time, location):
     return alt, az
 
 
-def altaz_to_radec(alt, az, time, location):
+def altaz_to_cirs(alt, az, time, location):
     '''
-    Convert altitude / azimuth to right ascension / declination.
+    Convert altitude / azimuth to intermediate right ascension / declination.
     Azimuth is measured from North (0°) through East (90°)
     '''
 
     # declare variables to match notation
-    ϕ = location.lat.rad
-    λ = location.lon.rad
+    λ, ϕ, _ = location.to_geodetic('WGS84')
+    λ = λ.to_value(u.rad)
+    ϕ = ϕ.to_value(u.rad)
 
     # precalculate terms we need more than once
     sin_a = sin(alt)
@@ -57,7 +70,53 @@ def altaz_to_radec(alt, az, time, location):
         sin_a * cosϕ - cos_a * cos_Az * sinϕ
     )
 
-    dec = arcsin(sin_a * sinϕ + cos_a * cos_Az * cosϕ)
-    ra = (earth_rotation_angle(time) + λ - h) % (2 * pi)
+    dec_i = arcsin(sin_a * sinϕ + cos_a * cos_Az * cosϕ)
+    ra_i = (earth_rotation_angle(time) + λ - h) % (2 * pi)
 
-    return ra, dec
+    return ra_i, dec_i
+
+
+def _altaz_to_cirs(fromcoord, toframe):
+    ra_i, dec_i = altaz_to_cirs(
+        alt=fromcoord.alt.rad,
+        az=fromcoord.az.rad,
+        time=fromcoord.obstime,
+        location=fromcoord.location,
+    )
+
+    ra_i = u.Quantity(ra_i, u.rad, copy=False)
+    dec_i = u.Quantity(dec_i, u.rad, copy=False)
+
+    if is_unit_repr(fromcoord):
+        rep = UnitSphericalRepresentation(lon=ra_i, lat=dec_i)
+    else:
+        rep = SphericalRepresentation(
+            lon=ra_i, lat=dec_i, distance=fromcoord.distance
+        )
+
+    return toframe.realize_frame(rep)
+
+
+def _cirs_to_altaz(fromcoord, toframe):
+    alt, az = cirs_to_altaz(
+        ra=fromcoord.ra.rad,
+        dec=fromcoord.dec.rad,
+        time=fromcoord.obstime,
+        location=fromcoord.location,
+    )
+
+    alt = u.Quantity(alt, u.rad, copy=False)
+    az = u.Quantity(az, u.rad, copy=False)
+
+    if is_unit_repr(fromcoord):
+        rep = UnitSphericalRepresentation(lon=az, lat=alt)
+    else:
+        rep = SphericalRepresentation(
+            lon=az, lat=alt, distance=fromcoord.distance
+        )
+
+    return toframe.realize_frame(rep)
+
+
+transform_altaz_to_cirs = FunctionTransform(_altaz_to_cirs, AltAz, CIRS)
+transform_cirs_to_altaz = FunctionTransform(_cirs_to_altaz, CIRS, AltAz)
